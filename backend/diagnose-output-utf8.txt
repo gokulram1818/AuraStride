@@ -1,0 +1,88 @@
+﻿=== Matches for Query "crunch": 2
+  - "cross body crunch": ID "0262" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "crunch (hands overhead)": ID "0267" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+=== Matches for Query "plank": 7
+  - "front plank with twist": ID "0464" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "push-up to side plank": ID "0664" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "side plank hip adduction": ID "1775" (Target: "adductors", Equipment: "body weight", BodyPart: "upper legs")
+  - "kneeling plank tap shoulder (male)": ID "3239" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "bodyweight incline side plank": ID "3544" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "reverse plank with leg lift": ID "3663" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+  - "power point plank": ID "3665" (Target: "abs", Equipment: "body weight", BodyPart: "waist")
+=== Matches for Query "face pull": 0
+=== Matches for Query "rope": 10
+  - "battling ropes": ID "0128" (Target: "delts", Equipment: "rope", BodyPart: "shoulders")
+  - "cable hammer curl (with rope)": ID "0165" (Target: "biceps", Equipment: "cable", BodyPart: "upper arms")
+  - "cable lateral pulldown (with rope attachment)": ID "0177" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable lying extension pullover (with rope attachment)": ID "0184" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable overhead triceps extension (rope attachment)": ID "0194" (Target: "triceps", Equipment: "cable", BodyPart: "upper arms")
+  - "cable pull through (with rope)": ID "0196" (Target: "glutes", Equipment: "cable", BodyPart: "upper legs")
+  - "cable pushdown (with rope attachment)": ID "0200" (Target: "triceps", Equipment: "cable", BodyPart: "upper arms")
+  - "cable rear delt row (with rope)": ID "0203" (Target: "delts", Equipment: "cable", BodyPart: "shoulders")
+  - "cable standing pulldown (with rope)": ID "0232" (Target: "biceps", Equipment: "cable", BodyPart: "upper arms")
+  - "cable standing rear delt row (with rope)": ID "0233" (Target: "delts", Equipment: "cable", BodyPart: "shoulders")
+=== Matches for Query "pulldown": 5
+  - "alternate lateral pulldown": ID "0007" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable bar lateral pulldown": ID "0150" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable cross-over lateral pulldown": ID "0153" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable lateral pulldown (with rope attachment)": ID "0177" (Target: "lats", Equipment: "cable", BodyPart: "back")
+  - "cable pulldown (pro lat bar)": ID "0197" (Target: "lats", Equipment: "cable", BodyPart: "back")
+=== Matches for Query "biceps curl": 1
+  - "dumbbell biceps curl": ID "0294" (Target: "biceps", Equipment: "dumbbell", BodyPart: "upper arms")
+=== Matches for Query "triceps extension": 2
+  - "barbell seated overhead triceps extension": ID "0092" (Target: "triceps", Equipment: "barbell", BodyPart: "upper arms")
+  - "barbell standing overhead triceps extension": ID "0109" (Target: "triceps", Equipment: "barbell", BodyPart: "upper arms")
+=== Matches for Query "push-up": 2
+  - "close-grip push-up": ID "0259" (Target: "triceps", Equipment: "body weight", BodyPart: "upper arms")
+  - "incline close-grip push-up": ID "0490" (Target: "triceps", Equipment: "body weight", BodyPart: "upper arms")
+=== Matches for Query "dip": 3
+  - "bench dip (knees bent)": ID "0129" (Target: "triceps", Equipment: "body weight", BodyPart: "upper arms")
+  - "triceps dip (bench leg)": ID "0812" (Target: "triceps", Equipment: "body weight", BodyPart: "upper arms")
+  - "triceps dip (between benches)": ID "0813" (Target: "triceps", Equipment: "body weight", BodyPart: "upper arms")
+=== Matches for Query "calf raise": 5
+  - "barbell standing leg calf raise": ID "0108" (Target: "calves", Equipment: "barbell", BodyPart: "lower legs")
+  - "barbell standing rocking leg calf raise": ID "0111" (Target: "calves", Equipment: "barbell", BodyPart: "lower legs")
+  - "donkey calf raise": ID "0284" (Target: "calves", Equipment: "body weight", BodyPart: "lower legs")
+  - "dumbbell standing calf raise": ID "0417" (Target: "calves", Equipment: "dumbbell", BodyPart: "lower legs")
+  - "lever standing calf raise": ID "0605" (Target: "calves", Equipment: "leverage machine", BodyPart: "lower legs")
+=== Matches for Query "fly": 0
+=== Matches for Query "incline dumbbell": 0
+=== Matches for Query "incline chest press": 3
+  - "dumbbell one arm incline chest press": ID "1289" (Target: "pectorals", Equipment: "dumbbell", BodyPart: "chest")
+  - "lever incline chest press": ID "1299" (Target: "pectorals", Equipment: "leverage machine", BodyPart: "chest")
+  - "lever incline chest press v. 2": ID "1479" (Target: "pectorals", Equipment: "leverage machine", BodyPart: "chest")
+=== Matches for Query "wrist curl": 2
+  - "dumbbell one arm reverse wrist curl": ID "0358" (Target: "forearms", Equipment: "dumbbell", BodyPart: "lower arms")
+  - "dumbbell one arm wrist curl": ID "0364" (Target: "forearms", Equipment: "dumbbell", BodyPart: "lower arms")
+=== Matches for Query "farmer": 1
+  - "farmers walk": ID "2133" (Target: "quads", Equipment: "dumbbell", BodyPart: "upper legs")
+=== Matches for Query "carry": 2
+  - "dumbbell single arm overhead carry": ID "3548" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "kettlebell overhead carry": ID "4244" (Target: "delts", Equipment: "kettlebell", BodyPart: "shoulders")
+=== Matches for Query "walk": 9
+  - "monster walk": ID "0628" (Target: "glutes", Equipment: "body weight (with resistance band)", BodyPart: "upper legs")
+  - "stationary bike walk": ID "0798" (Target: "cardiovascular system", Equipment: "leverage machine", BodyPart: "cardio")
+  - "walking lunge": ID "1460" (Target: "glutes", Equipment: "body weight", BodyPart: "upper legs")
+  - "farmers walk": ID "2133" (Target: "quads", Equipment: "dumbbell", BodyPart: "upper legs")
+  - "walk wave machine": ID "2140" (Target: "cardiovascular system", Equipment: "elliptical machine", BodyPart: "cardio")
+  - "walk elliptical cross trainer": ID "2141" (Target: "cardiovascular system", Equipment: "elliptical machine", BodyPart: "cardio")
+  - "walking on stepmill": ID "2311" (Target: "cardiovascular system", Equipment: "stepmill machine", BodyPart: "cardio")
+  - "walking high knees lunge": ID "3655" (Target: "cardiovascular system", Equipment: "body weight", BodyPart: "cardio")
+  - "walking on incline treadmill": ID "3666" (Target: "cardiovascular system", Equipment: "leverage machine", BodyPart: "cardio")
+=== Matches for Query "squat": 0
+=== Matches for Query "shoulder press": 10
+  - "cable alternate shoulder press": ID "0148" (Target: "delts", Equipment: "cable", BodyPart: "shoulders")
+  - "cable shoulder press": ID "0219" (Target: "delts", Equipment: "cable", BodyPart: "shoulders")
+  - "dumbbell one arm shoulder press v. 2": ID "0360" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "dumbbell one arm shoulder press": ID "0361" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "dumbbell seated shoulder press (parallel grip)": ID "0404" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "dumbbell seated shoulder press": ID "0405" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "lever one arm shoulder press": ID "0590" (Target: "delts", Equipment: "leverage machine", BodyPart: "shoulders")
+  - "lever shoulder press": ID "0603" (Target: "delts", Equipment: "leverage machine", BodyPart: "shoulders")
+  - "smith seated shoulder press": ID "0765" (Target: "delts", Equipment: "smith machine", BodyPart: "shoulders")
+  - "smith shoulder press": ID "0766" (Target: "delts", Equipment: "smith machine", BodyPart: "shoulders")
+=== Matches for Query "overhead press": 4
+  - "barbell seated overhead press": ID "0091" (Target: "delts", Equipment: "barbell", BodyPart: "shoulders")
+  - "dumbbell standing alternate overhead press": ID "0414" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "dumbbell standing overhead press": ID "0426" (Target: "delts", Equipment: "dumbbell", BodyPart: "shoulders")
+  - "band twisting overhead press": ID "1012" (Target: "delts", Equipment: "band", BodyPart: "shoulders")
