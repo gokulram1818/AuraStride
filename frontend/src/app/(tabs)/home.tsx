@@ -218,6 +218,113 @@ export default function HomeScreen() {
     return dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   };
 
+  const dummySchedule = [
+    { day: 'Monday', restDay: true, exercises: [] },
+    { day: 'Tuesday', restDay: true, exercises: [] },
+    { day: 'Wednesday', restDay: true, exercises: [] },
+    { day: 'Thursday', restDay: true, exercises: [] },
+    { day: 'Friday', restDay: true, exercises: [] },
+    { day: 'Saturday', restDay: true, exercises: [] },
+    { day: 'Sunday', restDay: true, exercises: [] }
+  ];
+
+  const dummyProgram = {
+    type: 'Custom',
+    schedule: dummySchedule
+  };
+
+  const scheduleToRender = activeProgram?.schedule || dummySchedule;
+
+  const handleDayPress = async (idx: number, dayName: string) => {
+    if (activeProgram) {
+      router.push({
+        pathname: '/workout/day-detail',
+        params: {
+          programId: activeProgram._id,
+          dayIdx: idx.toString(),
+          dayName: dayName,
+        },
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const customRes = await fetch(`${API_URL}/workouts/custom`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      let targetProgramId = '';
+      if (customRes.ok) {
+        const customList = await customRes.json();
+        if (customList && customList.length > 0) {
+          targetProgramId = customList[0]._id;
+        }
+      }
+
+      if (!targetProgramId) {
+        const createRes = await fetch(`${API_URL}/workouts/custom`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: 'My Custom Split',
+            difficulty: 'Beginner',
+            durationWeeks: 4,
+            description: 'My custom routine.',
+            schedule: dummySchedule
+          })
+        });
+
+        if (createRes.ok) {
+          const newProg = await createRes.json();
+          targetProgramId = newProg._id;
+        } else {
+          throw new Error('Failed to create custom split');
+        }
+      }
+
+      const selectRes = await fetch(`${API_URL}/workouts/select-program/${targetProgramId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (selectRes.ok) {
+        await refreshUser();
+        const localDate = new Date().toISOString().split('T')[0];
+        const dashRes = await fetch(`${API_URL}/stats/dashboard?localDate=${localDate}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        if (dashRes.ok) {
+          const freshDashData = await dashRes.json();
+          setDashboardData(freshDashData);
+          await AsyncStorage.setItem('cached_dashboard_data', JSON.stringify(freshDashData));
+        }
+
+        router.push({
+          pathname: '/workout/day-detail',
+          params: {
+            programId: targetProgramId,
+            dayIdx: idx.toString(),
+            dayName: dayName,
+          },
+        });
+      } else {
+        throw new Error('Failed to activate program');
+      }
+    } catch (e: any) {
+      console.error(e);
+      Alert.alert('Error', e.message || 'Could not select or create custom routine.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const todaySchedule = getTodaySchedule(activeProgram);
   const hasTodayExercises = todaySchedule && !todaySchedule.restDay && todaySchedule.exercises && todaySchedule.exercises.length > 0;
 
@@ -351,82 +458,71 @@ export default function HomeScreen() {
           </View>
 
           {/* Weekly Program Schedule */}
-          {activeProgram && activeProgram.schedule && (
-            <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Weekly Schedule</Text>
-              <View style={styles.gridContainer}>
-                {activeProgram.schedule.map((sItem: any, idx: number) => {
-                  const todayIdx = getTodayDayIdx(activeProgram);
-                  const isToday = idx === todayIdx;
-                  const isRest = sItem.restDay || !sItem.exercises || sItem.exercises.length === 0;
-                  const numEx = sItem.exercises ? sItem.exercises.length : 0;
-                  const isLast = idx === activeProgram.schedule.length - 1;
-                  
-                  // Check if this day is logged in weeklySummary and all exercises are completed
-                  const dayLog = dashboardData?.weeklySummary?.find(
-                    (log: any) => log.day?.toLowerCase() === sItem.day?.toLowerCase()
-                  );
-                  const completedCount = dayLog?.completedExercises?.length || 0;
-                  const totalCount = sItem.exercises ? sItem.exercises.length : 0;
-                  const isLogged = totalCount > 0 && completedCount >= totalCount;
+          <View style={styles.sectionContainer}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Weekly Schedule</Text>
+            <View style={styles.gridContainer}>
+              {scheduleToRender.map((sItem: any, idx: number) => {
+                const todayIdx = getTodayDayIdx(activeProgram || dummyProgram);
+                const isToday = idx === todayIdx;
+                const isRest = sItem.restDay || !sItem.exercises || sItem.exercises.length === 0;
+                const numEx = sItem.exercises ? sItem.exercises.length : 0;
+                const isLast = idx === scheduleToRender.length - 1;
+                
+                // Check if this day is logged in weeklySummary and all exercises are completed
+                const dayLog = dashboardData?.weeklySummary?.find(
+                  (log: any) => log.day?.toLowerCase() === sItem.day?.toLowerCase()
+                );
+                const completedCount = dayLog?.completedExercises?.length || 0;
+                const totalCount = sItem.exercises ? sItem.exercises.length : 0;
+                const isLogged = totalCount > 0 && completedCount >= totalCount;
 
-                  return (
-                    <TouchableOpacity
-                      key={idx}
-                      style={[
-                        styles.gridCard,
-                        { backgroundColor: colors.gridCardBg, borderColor: colors.gridCardBorder },
-                        isLast && { width: '100%' },
-                        isToday && { borderColor: colors.gridCardTodayBorder, borderWidth: 1.5 },
-                        isRest && { backgroundColor: colors.gridCardRestBg }
-                      ]}
-                      onPress={() =>
-                        router.push({
-                          pathname: '/workout/day-detail',
-                          params: {
-                            programId: activeProgram._id,
-                            dayIdx: idx.toString(),
-                            dayName: sItem.day,
-                          },
-                        })
-                      }
-                    >
-                      {isToday && (
-                        <View style={styles.todayBadge}>
-                          <Text style={styles.todayBadgeText}>TODAY</Text>
+                return (
+                  <TouchableOpacity
+                    key={idx}
+                    style={[
+                      styles.gridCard,
+                      { backgroundColor: colors.gridCardBg, borderColor: colors.gridCardBorder },
+                      isLast && { width: '100%' },
+                      isToday && { borderColor: colors.gridCardTodayBorder, borderWidth: 1.5 },
+                      isRest && { backgroundColor: colors.gridCardRestBg }
+                    ]}
+                    onPress={() => handleDayPress(idx, sItem.day)}
+                  >
+                    {isToday && (
+                      <View style={styles.todayBadge}>
+                        <Text style={styles.todayBadgeText}>TODAY</Text>
+                      </View>
+                    )}
+                    
+                    <View style={styles.cardHeaderRow}>
+                      <Text style={[styles.cardDayText, isToday && { color: colors.gridCardTodayText }, !isToday && { color: colors.text }]}>
+                        {sItem.day}
+                      </Text>
+                      {isLogged && (
+                        <View style={styles.checkBadge}>
+                          <Check size={10} color="#00C853" />
                         </View>
                       )}
-                      
-                      <View style={styles.cardHeaderRow}>
-                        <Text style={[styles.cardDayText, isToday && { color: colors.gridCardTodayText }, !isToday && { color: colors.text }]}>
-                          {sItem.day}
-                        </Text>
-                        {isLogged && (
-                          <View style={styles.checkBadge}>
-                            <Check size={10} color="#00C853" />
-                          </View>
-                        )}
-                      </View>
+                    </View>
 
-                      <Text style={[styles.cardStatusText, isToday && { color: colors.gridCardTodayText }, !isToday && { color: isRest ? '#00C853' : colors.subText }]}>
-                        {isRest ? 'Rest Day' : `${numEx} Exercise${numEx > 1 ? 's' : ''}`}
+                    <Text style={[styles.cardStatusText, isToday && { color: colors.gridCardTodayText }, !isToday && { color: isRest ? '#00C853' : colors.subText }]}>
+                      {isRest ? 'Rest Day' : `${numEx} Exercise${numEx > 1 ? 's' : ''}`}
+                    </Text>
+
+                    {!isRest && sItem.exercises && sItem.exercises.length > 0 ? (
+                      <Text style={[styles.exercisesPreviewText, { color: colors.gridCardPreviewText }]} numberOfLines={1}>
+                        {sItem.exercises.map((e: any) => e.exercise?.name || 'Ex').join(', ')}
                       </Text>
-
-                      {!isRest && sItem.exercises && sItem.exercises.length > 0 ? (
-                        <Text style={[styles.exercisesPreviewText, { color: colors.gridCardPreviewText }]} numberOfLines={1}>
-                          {sItem.exercises.map((e: any) => e.exercise?.name || 'Ex').join(', ')}
-                        </Text>
-                      ) : (
-                        <Text style={[styles.exercisesPreviewText, { color: colors.gridCardPreviewText }]} numberOfLines={1}>
-                          Rest and Recovery
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                    ) : (
+                      <Text style={[styles.exercisesPreviewText, { color: colors.gridCardPreviewText }]} numberOfLines={1}>
+                        Rest and Recovery
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
-          )}
+          </View>
 
           {/* Consistency Tracker */}
           <View style={styles.sectionContainer}>
