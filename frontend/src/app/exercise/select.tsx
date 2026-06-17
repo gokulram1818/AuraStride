@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
   SafeAreaView,
   StatusBar,
-  TextInput,
-  Alert
+  TextInput
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from '../../components/Alert';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, router } from 'expo-router';
 import {

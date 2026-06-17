@@ -8,13 +8,13 @@ import {
   ActivityIndicator,
   Modal,
   SafeAreaView,
-  StatusBar,
-  Alert
+  StatusBar
 } from 'react-native';
 import { useFocusEffect, router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from '../../components/Alert';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   Dumbbell,

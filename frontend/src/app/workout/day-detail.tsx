@@ -9,13 +9,13 @@ import {
   ActivityIndicator,
   SafeAreaView,
   StatusBar,
-  Alert,
   KeyboardAvoidingView,
   Platform
 } from 'react-native';
 import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
+import { Alert } from '../../components/Alert';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Trash2, Plus, Info, Check, Dumbbell, Flame } from 'lucide-react-native';
 

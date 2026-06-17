@@ -8,13 +8,13 @@ import {
   ActivityIndicator,
   TextInput,
   Modal,
-  Alert,
   SafeAreaView,
   StatusBar
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
+import { Alert } from '../../components/Alert';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, LinearGradient as SvgGradient, Stop, Circle, Defs } from 'react-native-svg';
 import { TrendingUp, Plus, Trash2, Calendar, Scale, Award, ArrowDown, ArrowUp, X } from 'lucide-react-native';

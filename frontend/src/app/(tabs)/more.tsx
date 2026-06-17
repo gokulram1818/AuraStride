@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Alert,
   SafeAreaView,
   StatusBar
 } from 'react-native';
+import { Alert } from '../../components/Alert';
 import { useAuth } from '../../context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
