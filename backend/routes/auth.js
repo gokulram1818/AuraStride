@@ -171,21 +171,28 @@ router.post('/survey', auth, async (req, res) => {
     const heightInMeters = (user.heightUnit === 'inches') ? ((height * 2.54) / 100) : (height / 100);
     const bmi = parseFloat((weightInKg / (heightInMeters * heightInMeters)).toFixed(1));
 
-    // Recommend Workout Program based on Goal and experience
-    let recommendedProgramName = 'Summer Burn';
-    if (goal === 'Weight Loss') {
-      recommendedProgramName = 'Fat Loss Program';
-    } else if (goal === 'Muscle Gain') {
-      recommendedProgramName = 'Muscle Builder Program';
-    } else if (goal === 'Weight Gain') {
-      recommendedProgramName = '30-Day Workout Challenge';
-    } else if (goal === 'General Fitness') {
-      recommendedProgramName = 'Summer Burn';
-    }
+    // Create and set "My Custom Split" as the default active program (all 7 days are rest days)
+    const defaultSchedule = [
+      { day: 'Monday', restDay: true, exercises: [] },
+      { day: 'Tuesday', restDay: true, exercises: [] },
+      { day: 'Wednesday', restDay: true, exercises: [] },
+      { day: 'Thursday', restDay: true, exercises: [] },
+      { day: 'Friday', restDay: true, exercises: [] },
+      { day: 'Saturday', restDay: true, exercises: [] },
+      { day: 'Sunday', restDay: true, exercises: [] }
+    ];
 
-    // Find the workout program ID
-    const program = await Workout.findOne({ name: recommendedProgramName, type: 'Preplanned' });
-    const programId = program ? program._id : null;
+    const customProgram = new Workout({
+      name: 'My Custom Split',
+      type: 'Custom',
+      creator: user._id,
+      difficulty: 'Beginner',
+      durationWeeks: 4,
+      description: 'My custom routine split.',
+      schedule: defaultSchedule
+    });
+
+    const savedProgram = await customProgram.save();
 
     // Update user profile
     user.height = height;
@@ -199,10 +206,7 @@ router.post('/survey', auth, async (req, res) => {
     user.targetTimelineWeeks = targetTimelineWeeks || 8;
     user.startingWeight = weight;
     user.profileCompleted = true;
-    
-    if (programId) {
-      user.activeWorkoutProgram = programId;
-    }
+    user.activeWorkoutProgram = savedProgram._id;
 
     await user.save();
 
@@ -219,7 +223,7 @@ router.post('/survey', auth, async (req, res) => {
     res.json({
       msg: 'Survey saved successfully',
       user: populatedUser,
-      recommendedProgram: program
+      recommendedProgram: savedProgram
     });
   } catch (err) {
     console.error(err.message);

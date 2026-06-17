@@ -145,21 +145,8 @@ export default function OnboardingSurveyScreen() {
       const heightInMeters = (heightUnit === 'inches') ? ((heightVal * 2.54) / 100) : (heightVal / 100);
       const calculatedBmi = parseFloat((weightInKg / (heightInMeters * heightInMeters)).toFixed(1));
       
-      let recommendedName = 'Summer Burn';
-      let programDesc = 'High-intensity cardio and core burner to tone up for summer.';
-      if (goal === 'Weight Loss') {
-        recommendedName = 'Fat Loss Program';
-        programDesc = 'Targeted calorie-burning circuit using high intensity intervals.';
-      } else if (goal === 'Muscle Gain') {
-        recommendedName = 'Muscle Builder Program';
-        programDesc = 'Hypertrophy-focused training routine using progressive overload weights.';
-      } else if (goal === 'Weight Gain') {
-        recommendedName = '30-Day Workout Challenge';
-        programDesc = 'Structured conditioning schedule designed to challenge and grow strength.';
-      } else if (goal === 'General Fitness') {
-        recommendedName = 'Summer Burn';
-        programDesc = 'Balanced workout targeting full body flexibility, core, and calorie burn.';
-      }
+      const recommendedName = 'My Custom Split';
+      const programDesc = 'Your custom routine split. Every day is set as a rest day by default so you can build your own program.';
 
       setRecommendationResult({
         bmi: calculatedBmi,
