@@ -14,13 +14,15 @@ import {
 import { useFocusEffect, router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   Dumbbell,
   Play,
   X,
   Award,
-  Clock
+  Clock,
+  Trash2
 } from 'lucide-react-native';
 
 export default function WorkoutScreen() {
@@ -63,8 +65,18 @@ export default function WorkoutScreen() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const fetchPreplannedPrograms = async () => {
+    // 1. Try to load from local cache first
+    try {
+      const cachedPreplanned = await AsyncStorage.getItem('cached_preplanned_programs');
+      const cachedCustom = await AsyncStorage.getItem('cached_custom_programs');
+      if (cachedPreplanned) setPreplannedPrograms(JSON.parse(cachedPreplanned));
+      if (cachedCustom) setCustomPrograms(JSON.parse(cachedCustom));
+      if (cachedPreplanned || cachedCustom) setIsLoading(false);
+    } catch (e) {
+      console.error('Failed to load programs from cache:', e);
+    }
+
     if (!token) return;
-    setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/workouts/preplanned`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -72,6 +84,7 @@ export default function WorkoutScreen() {
       if (response.ok) {
         const data = await response.json();
         setPreplannedPrograms(data);
+        await AsyncStorage.setItem('cached_preplanned_programs', JSON.stringify(data));
       }
 
       const customResponse = await fetch(`${API_URL}/workouts/custom`, {
@@ -80,12 +93,45 @@ export default function WorkoutScreen() {
       if (customResponse.ok) {
         const customData = await customResponse.json();
         setCustomPrograms(customData);
+        await AsyncStorage.setItem('cached_custom_programs', JSON.stringify(customData));
       }
     } catch (err) {
       console.error('Error fetching programs:', err);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDeleteCustomProgram = async (programId: string) => {
+    Alert.alert(
+      'Delete Routine',
+      'Are you sure you want to permanently delete this custom workout routine?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const res = await fetch(`${API_URL}/workouts/custom/${programId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              if (res.ok) {
+                Alert.alert('Success', 'Custom routine deleted.');
+                await refreshUser();
+                fetchPreplannedPrograms();
+              } else {
+                const err = await res.json();
+                Alert.alert('Error', err.msg || 'Failed to delete custom routine');
+              }
+            } catch (err) {
+              Alert.alert('Error', 'Failed to delete custom routine');
+            }
+          }
+        }
+      ]
+    );
   };
 
   useFocusEffect(
@@ -137,7 +183,7 @@ export default function WorkoutScreen() {
               <View style={{ marginBottom: 15 }}>
                 <Text style={styles.sectionTitle}>My Custom Routines</Text>
                 {customPrograms.map((program) => {
-                  const isActive = user?.activeWorkoutProgram?._id === program._id;
+                  const isActive = user?.activeWorkoutProgram?._id === program._id || user?.activeWorkoutProgram === program._id;
                   return (
                     <TouchableOpacity
                       key={program._id}
@@ -167,18 +213,26 @@ export default function WorkoutScreen() {
                             </Text>
                           </View>
                         </View>
-                        {isActive ? (
-                          <View style={styles.activeLabel}>
-                            <Text style={styles.activeLabelText}>Active</Text>
-                          </View>
-                        ) : (
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          {isActive ? (
+                            <View style={styles.activeLabel}>
+                              <Text style={styles.activeLabelText}>Active</Text>
+                            </View>
+                          ) : (
+                            <TouchableOpacity
+                              style={[styles.selectBtn, { backgroundColor: colors.restToggleBg }]}
+                              onPress={() => handleSelectProgram(program._id)}
+                            >
+                              <Text style={[styles.selectBtnText, { color: colors.text }]}>Select</Text>
+                            </TouchableOpacity>
+                          )}
                           <TouchableOpacity
-                            style={[styles.selectBtn, { backgroundColor: colors.restToggleBg }]}
-                            onPress={() => handleSelectProgram(program._id)}
+                            style={{ marginLeft: 10, padding: 8, backgroundColor: 'rgba(255, 75, 43, 0.08)', borderRadius: 10, borderWidth: 1, borderColor: 'rgba(255, 75, 43, 0.15)' }}
+                            onPress={() => handleDeleteCustomProgram(program._id)}
                           >
-                            <Text style={[styles.selectBtnText, { color: colors.text }]}>Select</Text>
+                            <Trash2 size={16} color="#FF4B2B" />
                           </TouchableOpacity>
-                        )}
+                        </View>
                       </View>
                     </TouchableOpacity>
                   );
@@ -188,7 +242,7 @@ export default function WorkoutScreen() {
 
             <Text style={styles.sectionTitle}>Template Programs</Text>
             {preplannedPrograms.map((program) => {
-              const isActive = user?.activeWorkoutProgram?._id === program._id;
+              const isActive = user?.activeWorkoutProgram?._id === program._id || user?.activeWorkoutProgram === program._id;
               return (
                 <TouchableOpacity
                   key={program._id}

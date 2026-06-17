@@ -15,6 +15,7 @@ import {
 import { useFocusEffect, router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Flame, Dumbbell, Award, ChevronRight, Activity, Calendar, Check } from 'lucide-react-native';
 
@@ -67,6 +68,19 @@ export default function HomeScreen() {
 
   const fetchDashboardData = async () => {
     if (!token) return;
+    
+    // 1. Try to load from cache first
+    try {
+      const cached = await AsyncStorage.getItem('cached_dashboard_data');
+      if (cached) {
+        setDashboardData(JSON.parse(cached));
+        setIsLoading(false);
+      }
+    } catch (e) {
+      console.error('Failed to load dashboard from cache:', e);
+    }
+
+    // 2. Fetch fresh copy from backend
     try {
       const localDate = new Date().toISOString().split('T')[0];
       const response = await fetch(`${API_URL}/stats/dashboard?localDate=${localDate}`, {
@@ -83,6 +97,7 @@ export default function HomeScreen() {
 
       const data = await response.json();
       setDashboardData(data);
+      await AsyncStorage.setItem('cached_dashboard_data', JSON.stringify(data));
     } catch (err: any) {
       console.error(err);
       setErrorMsg('Could not update dashboard');

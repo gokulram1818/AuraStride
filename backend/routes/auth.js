@@ -95,16 +95,26 @@ router.post('/login', async (req, res) => {
     }
 
     const token = generateToken(user._id);
+    
+    // Fully populate the activeWorkoutProgram and its schedule exercises
+    const populatedUser = await User.findById(user._id)
+      .populate({
+        path: 'activeWorkoutProgram',
+        populate: {
+          path: 'schedule.exercises.exercise'
+        }
+      });
+
     res.json({
       token,
       user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        profileCompleted: user.profileCompleted,
-        goal: user.goal,
-        experienceLevel: user.experienceLevel,
-        activeWorkoutProgram: user.activeWorkoutProgram
+        id: populatedUser._id,
+        email: populatedUser.email,
+        username: populatedUser.username,
+        profileCompleted: populatedUser.profileCompleted,
+        goal: populatedUser.goal,
+        experienceLevel: populatedUser.experienceLevel,
+        activeWorkoutProgram: populatedUser.activeWorkoutProgram
       }
     });
   } catch (err) {

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL } from '../../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, router } from 'expo-router';
 import {
@@ -103,7 +104,18 @@ export default function ExerciseSelectScreen() {
   const [selections, setSelections] = useState<{ [key: string]: any }>({});
 
   const fetchAllExercises = async () => {
-    setIsLoading(true);
+    // 1. Try to load from cache first
+    try {
+      const cached = await AsyncStorage.getItem('cached_exercises');
+      if (cached) {
+        setAllExercises(JSON.parse(cached));
+        setIsLoading(false);
+      }
+    } catch (e) {
+      console.error('Failed to load exercises from cache:', e);
+    }
+
+    // 2. Fetch fresh copy from server
     try {
       const response = await fetch(`${API_URL}/exercises`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -111,6 +123,7 @@ export default function ExerciseSelectScreen() {
       if (response.ok) {
         const data = await response.json();
         setAllExercises(data);
+        await AsyncStorage.setItem('cached_exercises', JSON.stringify(data));
       }
     } catch (error) {
       console.error('Error fetching exercises:', error);

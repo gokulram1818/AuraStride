@@ -427,6 +427,17 @@ export default function DayDetailScreen() {
                   });
                   await refreshUser();
 
+                  // Replace the current preplanned screen with the newly created custom screen
+                  router.replace({
+                    pathname: '/workout/day-detail',
+                    params: {
+                      programId: savedData._id,
+                      dayIdx: dayIdx,
+                      dayName: dayName
+                    }
+                  });
+
+                  // Then push the exercise selector screen on top
                   router.push({
                     pathname: '/exercise/select',
                     params: {
@@ -624,7 +635,7 @@ export default function DayDetailScreen() {
                       <View style={[styles.tableHeaderRow, { borderBottomColor: colors.borderRow }]}>
                         <Text style={[styles.columnHeader, { flex: 1, color: colors.subText }]}>Set</Text>
                         <Text style={[styles.columnHeader, { flex: 1.5, textAlign: 'center', color: colors.subText }]}>Reps</Text>
-                        <Text style={[styles.columnHeader, { flex: 3.2, color: colors.subText }]}>Weight</Text>
+                        <Text style={[styles.columnHeader, { flex: 3.6, color: colors.subText, paddingLeft: 8 }]}>Weight</Text>
                         <Text style={[styles.columnHeader, { width: 32 }]}></Text>
                       </View>
 
@@ -644,10 +655,10 @@ export default function DayDetailScreen() {
                             />
                           </View>
 
-                          {/* Weight input and Unit pill toggle */}
-                          <View style={styles.weightInputCell}>
+                          {/* Weight input */}
+                          <View style={{ flex: 1.8, marginHorizontal: 4 }}>
                             <TextInput
-                              style={[styles.setInput, { flex: 1, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.text }]}
+                              style={[styles.setInput, { backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.text }]}
                               value={setObj.weight}
                               onChangeText={(val) => handleUpdateSetField(exIdx, setIdx, 'weight', val)}
                               keyboardType="numeric"
@@ -655,32 +666,34 @@ export default function DayDetailScreen() {
                               placeholderTextColor={colors.subText}
                               textAlign="center"
                             />
-                            <View style={[styles.compactUnitToggle, { backgroundColor: colors.unitToggleBg, borderColor: colors.unitToggleBorder }]}>
-                              <TouchableOpacity
-                                style={[
-                                  styles.compactUnitBtn,
-                                  (setObj.unit || 'kg') === 'kg' && { backgroundColor: colors.unitToggleBtnActive }
-                                ]}
-                                onPress={() => handleUpdateSetField(exIdx, setIdx, 'unit', 'kg')}
-                              >
-                                <Text style={[
-                                  styles.compactUnitText,
-                                  { color: (setObj.unit || 'kg') === 'kg' ? '#00A3FF' : colors.subText }
-                                ]}>kg</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={[
-                                  styles.compactUnitBtn,
-                                  setObj.unit === 'lbs' && { backgroundColor: colors.unitToggleBtnActive }
-                                ]}
-                                onPress={() => handleUpdateSetField(exIdx, setIdx, 'unit', 'lbs')}
-                              >
-                                <Text style={[
-                                  styles.compactUnitText,
-                                  { color: setObj.unit === 'lbs' ? '#00A3FF' : colors.subText }
-                                ]}>lbs</Text>
-                              </TouchableOpacity>
-                            </View>
+                          </View>
+
+                          {/* Unit toggle */}
+                          <View style={[styles.compactUnitToggle, { backgroundColor: colors.unitToggleBg, borderColor: colors.unitToggleBorder }]}>
+                            <TouchableOpacity
+                              style={[
+                                styles.compactUnitBtn,
+                                (setObj.unit || 'kg') === 'kg' && { backgroundColor: colors.unitToggleBtnActive }
+                              ]}
+                              onPress={() => handleUpdateSetField(exIdx, setIdx, 'unit', 'kg')}
+                            >
+                              <Text style={[
+                                styles.compactUnitText,
+                                { color: (setObj.unit || 'kg') === 'kg' ? '#00A3FF' : colors.subText }
+                              ]}>kg</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={[
+                                styles.compactUnitBtn,
+                                setObj.unit === 'lbs' && { backgroundColor: colors.unitToggleBtnActive }
+                              ]}
+                              onPress={() => handleUpdateSetField(exIdx, setIdx, 'unit', 'lbs')}
+                            >
+                              <Text style={[
+                                styles.compactUnitText,
+                                { color: setObj.unit === 'lbs' ? '#00A3FF' : colors.subText }
+                              ]}>lbs</Text>
+                            </TouchableOpacity>
                           </View>
 
                           {/* Delete Set */}
@@ -907,18 +920,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   compactUnitToggle: {
+    flex: 1.8,
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.04)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: 6,
-    height: 24,
-    padding: 1,
-    marginLeft: 6,
+    height: 32,
+    padding: 2,
+    marginHorizontal: 4,
     alignItems: 'center',
   },
   compactUnitBtn: {
-    paddingHorizontal: 6,
+    flex: 1,
     height: '100%',
     borderRadius: 4,
     alignItems: 'center',
